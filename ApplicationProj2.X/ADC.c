@@ -40,16 +40,7 @@ void ADCinit(void)
     //full conversion = -0.6 ms
     //250 Hz = 4ms period
     
-    AD1CHSbits.CH0NB = 0; //CHO MUXB negative input is VR-
-    AD1CHSbits.CH0SB = 0b0101; //Positive input is AN5/RA3/pin8 for MUXB
-    AD1CHSbits.CH0NA = 0; //CHO MUXA negative input is VR-
-    AD1CHSbits.CH0SA = 0b0101; //Positive input is AN5/RA3/pin8 for MUXA
     
-    
-    //IO PORT SELECTION
-    TRISAbits.TRISA3 = 1; //set pin8/RA3/AN5 as input
-    AD1PCFG = 0xFFFF; //set all bits as digital
-    AD1PCFGbits.PCFG5 =0; //set only pin8/RA3/AN5 as analog input for ADC
     AD1CSSL = 0; //Input scan disabled, 0x0000 is default state
     
     //INT bit setup
@@ -64,8 +55,28 @@ void ADCinit(void)
 //ADC conversion subroutine
 //Returns single conversion 10bit ADC value (ADCvalue) in unsigned int form
 
-unsigned int do_ADC(void)
+unsigned int do_ADC(int pin)
 {
+    AD1CHSbits.CH0NB = 0; //CHO MUXB negative input is VR-
+    AD1CHSbits.CH0SB = pin; //Positive input is AN5/RA3/pin8 for MUXB
+    AD1CHSbits.CH0NA = 0; //CHO MUXA negative input is VR-
+    AD1CHSbits.CH0SA = pin; //Positive input is AN5/RA3/pin8 for MUXA
+    
+    //IO PORT SELECTION
+    if(pin == 5) {
+        TRISAbits.TRISA3 = 1; //set pin8/RA3/AN5 as input
+        AD1PCFG = 0xFFFF; //set all bits as digital
+        AD1PCFGbits.PCFG5 = 0; //set only pin8/RA3/AN5 as analog input for ADC
+    } else if (pin == 11) {
+        TRISBbits.TRISB13 = 1;
+        AD1PCFG = 0xFFFF;
+        AD1PCFGbits.PCFG5 = 0; 
+    } else if (pin == 12) {
+        TRISBbits.TRISB12 = 1; // set AN12/RB12 as input
+        AD1PCFG = 0xFFFF; //set all bits as digital
+        AD1PCFGbits.PCFG12 = 0;
+    }
+    
     IFS0bits.AD1IF = 0;
     unsigned int ADCvalue = 0;
     AD1CON1bits.SAMP = 1; //start sampling, conversion starts automatically after SSRC and SAMC settings
@@ -78,34 +89,6 @@ unsigned int do_ADC(void)
     return(ADCvalue);
 }
 
-////Does ADC on AN5 and displays ADCBUF0 value and proportional number of markers on Terminal
-//void DispADC(void)
-//{
-//    uint16_t adcbuf = 0; //variable to store ADCBUF0 value
-//    uint32_t total = 0;
-//    //Delay_ms(1); //wait 1 ms before sampling
-//    int i = 0;
-//    while (i < 1000) {
-//        adcbuf = do_ADC(); //does ADC conversion on AN5/IO8
-////        Delay_ms(5);
-//        total += adcbuf;
-//        //        Delay_ms(5);
-//        //Disp2Dec(adcbuf);
-//        i++;
-//    }   
-//    double avg = total/1000;
-//    int numHyphens = (int)ceil((avg/1023)*20);
-//    //Disp2String("Number of Hyphens is: ");
-//    int j;
-//    for(j = 0; j < numHyphens; j++) {
-//        XmitUART2('-', 1);
-//    }
-//    Disp2Hex((int)avg);
-//    //XmitUART2('\n', 1);
-//    Disp2String("                  ");
-//    XmitUART2('\r', 1);
-//    return;   
-//}
 
 //ADC Interrupt subroutine
 
@@ -113,8 +96,4 @@ void __attribute__((interrupt, no_auto_psv)) _ADC1Interrupt(void)
 {
     IFS0bits.AD1IF = 0; //clear the ADC1 interrupt flag
 }
-
-/*
- * 
- */
 

@@ -16,6 +16,7 @@ void Delay_ms(uint16_t time_ms);
 void T1init();
 void T2init();
 void start_timer();
+int get_current_ms();
 int stop_timer();
 
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void);

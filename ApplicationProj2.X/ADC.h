@@ -22,7 +22,7 @@ extern "C" {
 void __attribute__((interrupt, no_auto_psv)) _ADC1Interrupt(void);
 
 void ADCinit(void);
-unsigned int do_ADC(void);
+unsigned int do_ADC(int pin);
 
 #endif	/* ADC_H */
 

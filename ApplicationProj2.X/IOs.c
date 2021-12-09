@@ -10,6 +10,7 @@
 #include "IOs.h"
 #include "UART2.h"
 #include "multimeter.h"
+#include "stdio.h"
 
 //Button flags:
 int CN30flag = 0;// flag for PB1
@@ -31,7 +32,7 @@ void IOinit() {
     CNPU1bits.CN1PUE = 1;   //pull up PB3
     CNEN1bits.CN0IE = 1;    //enable CN0 interrupt
     
-    TRISBbits.TRISB8 = 0;   //set LED pin as output
+    TRISAbits.TRISA6 = 0;   //set RA6 as an output for capacitor charge    
     
     IPC4bits.CNIP = 4;      //set CN interrupt priority
     IFS1bits.CNIF = 0;      //clears the CN interrupt flag
@@ -54,7 +55,13 @@ void IOcheck() {
         //PB2 is pressed
         float resistance = measure_resistance();
         Disp2String("OHMMETER Resistance =");
-        Disp2Dec(resistance);
+        if(resistance > 99999) {
+            //display value in kohms
+            Disp2Float(resistance/1000);
+            Disp2String("k");
+        } else {
+            Disp2Float(resistance);
+        }
         char* outp;
         sprintf(outp, "%s", "\u03a9");
         Disp2String(outp);
@@ -66,8 +73,13 @@ void IOcheck() {
     } else {
         float frequency = measure_frequency();
         Disp2String("Frequency =");
-        Disp2Dec(frequency);
+        Disp2Float(frequency);
         Disp2String("Hz");
+        if(frequency == 0) {
+            //no frequency detected, so enter idle mode
+            Idle();
+            //NOTE: connecting a frequency signal will cause a comparator interrupt, causing the chip to exit idle
+        }
     }
 }
 

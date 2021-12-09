@@ -10,6 +10,7 @@
 // 'C' source line config statements
 
 // FBS
+
 #pragma config BWRP = OFF               // Table Write Protect Boot (Boot segment may be written)
 #pragma config BSS = OFF                // Boot segment Protect (No boot program Flash segment)
 
@@ -53,20 +54,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <xc.h>
+#include <p24F16KA101.h>
 #include "IOs.h"
 #include "multimeter.h"
 #include "UART2.h"
 #include "ADC.h"
+#include "comparator.h"
+#include "TimeDelay.h"
 
 int main(int argc, char** argv) {
-    IOinit();
+    //Initialize all necessary pins through init functions
     InitUART2();
     ADCinit();
+    T2init();
+    comparatorInit();
+    IOinit();
     
     while(1) {
-        Disp2Float(1000.9345);
         IOcheck();
-        Disp2String("                    \r");
+        Disp2String("                       \r");
     }
     
     return 0;

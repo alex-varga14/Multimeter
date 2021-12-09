@@ -79,7 +79,7 @@ void InitUART2(void)
     
 	IEC1bits.U2TXIE = 1;	// Enable Transmit Interrupts
 	IFS1bits.U2RXIF = 0;	// Clear the Recieve Interrupt Flag
-	IPC7bits.U2RXIP = 4; //UART2 Rx interrupt has 2nd highest priority
+	IPC7bits.U2RXIP = 2;    //UART2 Rx interrupt has 2nd highest priority
     IEC1bits.U2RXIE = 0;	// Disable Recieve Interrupts
 
 	U2MODEbits.UARTEN = 1;	// And turn the peripheral on
@@ -186,10 +186,10 @@ void Disp2Hex32(unsigned long int DispData32)   // Displays 32 bit number in Hex
 }
 
 // Displays 16 bit unsigned in in decimal form
-void Disp2Dec(uint16_t Dec_num)
+void Disp2Dec(uint32_t Dec_num)
 {
     uint8_t rem;  //remainder in div by 10
-    uint16_t quot; 
+    uint32_t quot; 
     uint8_t ctr = 0;  //counter
     XmitUART2(' ',1);  // Disp Gap
     while(ctr<5)

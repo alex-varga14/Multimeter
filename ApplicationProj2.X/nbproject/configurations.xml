@@ -19,12 +19,12 @@
       <itemPath>multimeter.c</itemPath>
       <itemPath>UART2.c</itemPath>
       <itemPath>UART2.h</itemPath>
-      <itemPath>CTMU.c</itemPath>
-      <itemPath>CTMU.h</itemPath>
       <itemPath>ADC.c</itemPath>
       <itemPath>ADC.h</itemPath>
       <itemPath>TimeDelay.c</itemPath>
       <itemPath>TimeDelay.h</itemPath>
+      <itemPath>comparator.h</itemPath>
+      <itemPath>comparator.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

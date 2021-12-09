@@ -63,6 +63,13 @@ void start_timer() {
     T2CONbits.TON = 1; //start timer 2/3
 }
 
+//returns TMR2 value in ms but doesn't stop the timer
+int get_current_ms() {
+    int32_t total_cycles = TMR3*65536 + TMR2;
+    int millis = total_cycles/15.625;
+    return millis;
+}
+
 //stops timer 2/3 and returns the value of TMR2 in milliseconds
 int stop_timer() {
     T2CONbits.TON = 0; //stop timer 2

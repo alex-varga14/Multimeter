@@ -28,7 +28,8 @@ void __attribute__ ((interrupt, no_auto_psv)) _U2TXInterrupt(void);
 void Disp2Hex(unsigned int);
 void Disp2Hex32(unsigned long int);
 void Disp2String(char*);
-void Disp2Dec(unsigned int);
+void Disp2Float(float);
+void Disp2Dec(uint32_t);
 
 #endif	/* UART2_H */
 
